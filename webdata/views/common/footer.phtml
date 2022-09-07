@@ -1,0 +1,71 @@
+
+<form method="post" id="post-form">
+    <input type="hidden" name="sToken" value="<?= $this->sToken ?>" id="post-form-stoken">
+</form>
+
+<script type="text/javascript"><!--
+$(function(){
+    $('body').on('submit', '.ajax-form', function(e){
+        e.preventDefault();
+        var formdata = new FormData(this);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: $(this).attr('method'),
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: function(ret){
+                if (ret.error) {
+                    alert(ret.message);
+                    return;
+                }
+                document.location = document.location;
+            }
+        });
+    });
+
+    $('body').on('click', '.post-link', function(e){
+        e.preventDefault();
+
+        if ($(this).is('.confirm')) {
+            if (!confirm($(this).attr('data-confirm'))) {
+                return;
+            }
+        }
+
+        var url;
+        if ($(this).attr('href')) {
+            url = $(this).attr('href');
+        } else if ($(this).attr('data-link')) {
+            url = $(this).attr('data-link');
+        }
+
+        if ($(this).attr('data-success-url')) {
+            var done_url = $(this).attr('data-success-url');
+            $.ajax({
+                url: url,
+                type: $(this).attr('data-method') || 'post',
+                processData: false,
+                contentType: false,
+                data: new FormData($('#post-form')[0]),
+                success: function(ret){
+                    if (ret.error) {
+                        alert(ret.message);
+                        return;
+                    }
+                    document.location = done_url;
+                }
+            });
+            return;
+        }
+
+        $('#post-form').attr('action', url).submit();
+    });
+});
+//--></script>
+
+</div><!-- .row-fluid -->
+</div><!-- .container -->
+</body>
+</html>
