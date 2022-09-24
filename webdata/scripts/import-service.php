@@ -28,6 +28,7 @@ while ($row = fgetcsv($fp)) {
         $db->quoteWithColumn('data', $values['uid']),
         $db->quoteWithColumn('data', json_encode([
             'name' => $values['name'],
+            'hash_ids' => explode(';', $values['hash_ids']),
         ]))
     );
 }
