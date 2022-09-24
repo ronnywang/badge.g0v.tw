@@ -12,6 +12,9 @@ Pix_Loader::registerAutoLoad();
 if (file_exists(__DIR__ . '/config.php')) {
     include(__DIR__ . '/config.php');
 }
+if (!getenv('SLACK_CALLBACK_HOST')) {
+    putenv('SLACK_CALLBACK_HOST=' . $_SERVER['HTTP_HOST']);
+}
 Pix_Table::setLongQueryTime(3);
 // TODO: 之後要搭配 geoip
 date_default_timezone_set('Asia/Taipei');
