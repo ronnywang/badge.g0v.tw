@@ -1,0 +1,14 @@
+<?= $this->partial('common/header.phtml', $this) ?>
+<h1>@<?= $this->escape($this->user->name) ?></h1>
+<ul>
+    <?php foreach (ServiceUser::searchByIds(json_decode($this->user->ids)) as $user) { ?>
+    <li> [ <?= $this->escape($user->service->getData()->name) ?> ] <?= $this->escape($user->getData()->name) ?>
+    <ul>
+        <?php foreach ($user->badges as $badge) { ?>
+        <li> (<?= date('Y-m-d', $badge->badge_time) ?>) <?= $this->escape($badge->brief) ?></li>
+        <?php } ?>
+    </ul>
+    </li>
+<?php } ?>
+</ul>
+<?= $this->partial('common/footer.phtml', $this) ?>

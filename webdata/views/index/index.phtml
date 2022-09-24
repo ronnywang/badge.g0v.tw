@@ -1,2 +1,16 @@
 <?= $this->partial('common/header.phtml', $this) ?>
+<?php $ids = Pix_Session::get('ids') ?>
+<?php $ret = (ServiceUser::searchByIds($ids)) ?>
+<ul>
+    <?php foreach ($ret->users as $user) { ?>
+    <li>
+        [<?= $this->escape($user->service->getData()->name) ?>] <?= $this->escape($user->getData()->name) ?>
+        <ul>
+            <?php foreach (array_filter($ret->badges, function($b) use ($user) { return $b->service_user == $user->id; }) as $badge) { ?>
+            <li>(<?= date('Y-m-d', $badge->badge_time) ?>) <?= $this->escape($badge->brief) ?></li>
+            <?php } ?>
+        </ul>
+    </li>
+    <?php } ?>
+</ul>
 <?= $this->partial('common/footer.phtml', $this) ?>
