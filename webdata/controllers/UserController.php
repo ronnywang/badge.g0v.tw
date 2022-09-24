@@ -5,7 +5,7 @@ class UserController extends Pix_Controller
     public function loginAction()
 	{
         $client_id = getenv('SLACK_CLIENT_ID');
-        $redirect_uri = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/user/slackdone';
+        $redirect_uri = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/slackdone';
 
         $url = sprintf("https://g0v-tw.slack.com/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%s&team=%s",
             urlencode($client_id), // client_id
@@ -21,7 +21,7 @@ class UserController extends Pix_Controller
 	{
         $client_id = getenv('SLACK_CLIENT_ID');
         $client_secret = getenv('SLACK_CLIENT_SECRET');
-        $redirect_uri = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/user/slackdone';
+        $redirect_uri = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/slackdone';
         if (!$code = $_GET['code']) {
             return $this->alert("Error", '/');
         }
