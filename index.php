@@ -11,7 +11,7 @@ Pix_Controller::addDispatcher(function($uri){
         return ['index', 'index'];
     }
     if (preg_match('#^/_/(.*)#', $uri, $matches)) {
-        $terms = explode('/', $matches[1]);
+        $terms = explode('/', trim($matches[1], '/'));
         if (count($terms) == 1) {
             return [$terms[0], 'index'];
         }
