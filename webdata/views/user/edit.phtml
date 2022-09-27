@@ -1,9 +1,17 @@
 <?php
-$info = json_decode($this->user->data)->info;
+$data = json_decode($this->user->data);
+$info = $data->info;
+
 ?>
 <?= $this->partial('common/header.phtml', $this) ?>
 <h1>編輯我的個人資料</h1>
 <h2>頭像編輯</h2>
+<?php if ($data->avatar) { ?>
+<img width="128" height="128" src="<?= $this->escape($data->avatar) ?>">
+<?php } ?>
+<ul>
+    <li><a href="/_/user/slacklogin?next=/_/user/setavatar">使用 Slack 的頭像</a></li>
+</ul>
 <h2>身份編輯</h2>
 <ul>
     <?php foreach (json_decode($this->user->ids) as $id) { ?>

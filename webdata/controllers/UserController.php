@@ -132,6 +132,25 @@ class UserController extends Pix_Controller
         $this->view->user = $user;
     }
 
+    public function setavatarAction()
+    {
+        $avatar = Pix_Session::get('avatar');
+        if (!$avatar) {
+            return $this->alert('找不到頭像', '/_/user/edit');
+        }
+        if (!$login_id = Pix_Session::get('login_id')) {
+            return $this->redirect('/');
+        }
+
+        if (!$user = User::findByLoginID($login_id)) {
+            return $this->redirect('/');
+        }
+        $d = json_decode($user->data);
+        $d->avatar = $avatar;
+        $user->update(['data' => json_encode($d)]);
+        return $this->redirect('/_/user/edit');
+    }
+
 	public function slackdoneAction()
 	{
         $client_id = getenv('SLACK_CLIENT_ID');
