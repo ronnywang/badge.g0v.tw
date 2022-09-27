@@ -94,6 +94,15 @@ class UserController extends Pix_Controller
         }
 
         $this->view->user = $user;
+        if ($_POST) {
+            if ($_POST['sToken'] != $this->view->sToken) {
+                return $this->alert('stoken error', '/_/user/edit');
+            }
+            $data = json_decode($user->data);
+            $data->info = $_POST['info'];
+            $user->update(['data' => json_encode($data)]);
+            return $this->alert('更新完成', '/_/user/edit');
+        }
     }
 
     public function loginAction()
