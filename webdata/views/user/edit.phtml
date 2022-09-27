@@ -5,6 +5,11 @@ $info = json_decode($this->user->data)->info;
 <h1>編輯我的個人資料</h1>
 <h2>頭像編輯</h2>
 <h2>身份編輯</h2>
+<ul>
+    <?php foreach (json_decode($this->user->ids) as $id) { ?>
+    <li><?= $this->escape($id) ?></li>
+    <?php } ?>
+</ul>
 <h2>個人資料編輯</h2>
 <form method="post" action="/_/user/edit?method=info">
     <input type="hidden" name="sToken" value="<?= $this->sToken ?>">
