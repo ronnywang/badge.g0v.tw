@@ -70,10 +70,14 @@ class UserController extends Pix_Controller
             }
 
             try {
+                $d = new StdClass;
+                if ($avatar = Pix_Session::get('avatar')) {
+                    $d->avatar = $avatar;
+                }
                 User::insert([
                     'name' => $_POST['id'],
                     'ids' => json_encode($ids),
-                    'data' => '{}',
+                    'data' => json_encode($d),
                 ]);
             } catch (Pix_Table_DuplicateException $e) {
                 return $this->alert('代號已經被使用了，請再更換代號', '/_/user/new');
