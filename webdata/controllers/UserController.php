@@ -105,7 +105,7 @@ class UserController extends Pix_Controller
         }
     }
 
-    public function loginAction()
+    public function slackloginAction()
 	{
         $client_id = getenv('SLACK_CLIENT_ID');
         $redirect_uri = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/slackdone';
