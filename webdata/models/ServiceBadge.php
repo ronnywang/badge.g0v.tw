@@ -49,6 +49,7 @@ class ServiceBadge extends Pix_Table
             $obj->name = $row['name'];
             if (is_null($prev_time) or $prev_time != $row['badge_time']) {
                 $rank = count($ret) + 1;
+                $prev_time = $row['badge_time'];
             }
             $obj->rank = $rank;
             $ret[] = $obj;
