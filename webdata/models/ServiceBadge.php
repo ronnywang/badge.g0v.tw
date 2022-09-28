@@ -17,4 +17,19 @@ class ServiceBadge extends Pix_Table
 
         $this->addIndex('badgehash', ['service_id', 'service_user', 'badge_time', 'badge_hash'], 'unique');
     }
+
+    public static function getBadgeRank($badges)
+    {
+        $ids = $badges->toArray('id');
+        $sql = "SELECT id, 
+                        (SELECT COUNT(*) FROM service_badge WHERE main.service_id = service_id AND main.badge_hash = badge_hash) AS total,
+                        (SELECT COUNT(*) FROM service_badge WHERE main.service_id = service_id AND main.badge_hash = badge_hash AND main.badge_time < badge_time) AS rank
+                FROM service_badge AS main WHERE id IN (" . implode(',', $ids) . ")";
+        $res = ServiceBadge::getDb()->query($sql);
+        $ranks = new StdClass;
+        while ($row = $res->fetch_assoc()) {
+            $ranks->{$row['id']} = [$row['rank'] + 1, $row['total']];
+        }
+        return $ranks;
+    }
 }

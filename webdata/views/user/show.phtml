@@ -25,12 +25,16 @@ $data = $this->user->getData();
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        <?php $ranks = ServiceBadge::getBadgeRank($user->badges) ?>
                         <?php foreach ($user->badges as $badge) { ?>
                         <div class="col-sm-4">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
                                     <h5 class="card-title"><?= $this->escape($badge->brief) ?></h5>
-                                    <h6 class="card-subtitle"><?= date('Y-m-d', $badge->badge_time) ?><h6>
+                                    <h6 class="card-subtitle"><?= date('Y-m-d', $badge->badge_time) ?></h6>
+                                </div>
+                                <div class="card-footer text-end">
+                                    <?= $ranks->{$badge->id}[0] ?> / <?= $ranks->{$badge->id}[1] ?>
                                 </div>
                             </div>
                         </div>
