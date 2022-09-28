@@ -2,6 +2,19 @@
 
 class UserRow extends Pix_Table_Row
 {
+    public function updateServiceUsers()
+    {
+        $d = $this->getData();
+        if (!property_exists($d, 'service_users')) {
+            $d->service_users = [];
+        }
+        $ids = json_decode($this->ids);
+        foreach (ServiceUser::searchByIds($ids) as $su) {
+            $d->service_users[] = $su->id;
+        }
+        $this->update(['data' => json_encode($d)]);
+    }
+
     public function getData()
     {
         $data = json_decode($this->data);

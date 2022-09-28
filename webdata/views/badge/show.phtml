@@ -13,7 +13,13 @@
     <tr>
         <td id="rank-<?= $record->rank ?>"><?= $record->rank ?></td>
         <td><?= date('Y-m-d', $record->badge_time) ?></td>
-        <td><?= $this->escape($record->name) ?></td>
+        <td>
+            <?php if ($record->user_id) { ?>
+            <a href="/<?= urlencode($record->user_id) ?>"><?= $this->escape($record->name) ?></a>
+            <?php } else { ?>
+            <?= $this->escape($record->name) ?>
+            <?php } ?>
+        </td>
     </tr>
     <?php } ?>
     </tbody>
