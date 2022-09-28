@@ -1,0 +1,21 @@
+<?= $this->partial('common/header.phtml', $this) ?>
+<h3>[ <?= $this->escape($this->service->getData()->name) ?> ] <?= $this->escape($this->badge->brief) ?></h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>排名</th>
+            <th>時間</th>
+            <th>使用者</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach (ServiceBadge::getBadgeList($this->service->id, $this->badge->badge_hash) as $record) { ?>
+    <tr>
+        <td id="rank-<?= $record->rank ?>"><?= $record->rank ?></td>
+        <td><?= date('Y-m-d', $record->badge_time) ?></td>
+        <td><?= $this->escape($record->name) ?></td>
+    </tr>
+    <?php } ?>
+    </tbody>
+</table>
+<?= $this->partial('common/footer.phtml', $this) ?>

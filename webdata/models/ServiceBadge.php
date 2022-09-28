@@ -23,7 +23,7 @@ class ServiceBadge extends Pix_Table
         $ids = $badges->toArray('id');
         $sql = "SELECT id, 
                         (SELECT COUNT(*) FROM service_badge WHERE main.service_id = service_id AND main.badge_hash = badge_hash) AS total,
-                        (SELECT COUNT(*) FROM service_badge WHERE main.service_id = service_id AND main.badge_hash = badge_hash AND main.badge_time < badge_time) AS rank
+                        (SELECT COUNT(*) FROM service_badge WHERE main.service_id = service_id AND main.badge_hash = badge_hash AND main.badge_time > badge_time) AS rank
                 FROM service_badge AS main WHERE id IN (" . implode(',', $ids) . ")";
         $res = ServiceBadge::getDb()->query($sql);
         $ranks = new StdClass;
@@ -31,5 +31,28 @@ class ServiceBadge extends Pix_Table
             $ranks->{$row['id']} = [$row['rank'] + 1, $row['total']];
         }
         return $ranks;
+    }
+
+    public static function getBadgeList($service_id, $hash)
+    {
+        $ret = [];
+        $prev_time = null;
+        $rank = 1;
+        $sql = sprintf("SELECT badge_time, service_user.data->>'name' AS name 
+            FROM service_badge 
+            JOIN service_user ON service_badge.service_user = service_user.id
+            WHERE service_user.service_id = %d AND badge_hash = %d ORDER BY badge_time ASC", intval($service_id), intval($hash));
+        $res = ServiceBadge::getDb()->query($sql);
+        while ($row = $res->fetch_assoc()) {
+            $obj = new StdClass;
+            $obj->badge_time = $row['badge_time'];
+            $obj->name = $row['name'];
+            if (is_null($prev_time) or $prev_time != $row['badge_time']) {
+                $rank = count($ret) + 1;
+            }
+            $obj->rank = $rank;
+            $ret[] = $obj;
+        }
+        return $ret;
     }
 }

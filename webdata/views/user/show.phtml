@@ -34,7 +34,7 @@ $data = $this->user->getData();
                                     <h6 class="card-subtitle"><?= date('Y-m-d', $badge->badge_time) ?></h6>
                                 </div>
                                 <div class="card-footer text-end">
-                                    <?= $ranks->{$badge->id}[0] ?> / <?= $ranks->{$badge->id}[1] ?>
+                                    <a href="/_/badge/show?service_id=<?= $badge->service_id ?>&hash=<?= $badge->badge_hash ?>#rank-<?= $ranks->{$badge->id}[0] ?>"><?= $ranks->{$badge->id}[0] ?> / <?= $ranks->{$badge->id}[1] ?></a>
                                 </div>
                             </div>
                         </div>
