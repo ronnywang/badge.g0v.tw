@@ -1,14 +1,45 @@
+<?php
+$data = $this->user->getData();
+?>
 <?= $this->partial('common/header.phtml', $this) ?>
-<h1>@<?= $this->escape($this->user->name) ?></h1>
-<ul>
-    <?php foreach (ServiceUser::searchByIds(json_decode($this->user->ids)) as $user) { ?>
-    <li> [ <?= $this->escape($user->service->getData()->name) ?> ] <?= $this->escape($user->getData()->name) ?>
-    <ul>
-        <?php foreach ($user->badges as $badge) { ?>
-        <li> (<?= date('Y-m-d', $badge->badge_time) ?>) <?= $this->escape($badge->brief) ?></li>
-        <?php } ?>
-    </ul>
-    </li>
-<?php } ?>
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3 col-md-3">
+            <div class="card">
+                <?php if ($data->avatar) { ?>
+                <img class="card-img-top" src="<?= $this->escape($data->avatar) ?>" width="260" height="260">
+                <?php } ?>
+                <div class="card-body">
+                    <h3 class="card-title"><?= $this->escape($data->info->name) ?></h3>
+                    <p>@<?= $this->escape($this->user->name) ?></p>
+                    <p><?= $this->escape($data->info->keyword) ?></p>
+                    <p><?= $this->escape($data->info->intro) ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9 col-md-9">
+            <?php foreach (ServiceUser::searchByIds(json_decode($this->user->ids)) as $user) { ?>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">[ <?= $this->escape($user->service->getData()->name) ?> ] <?= $this->escape($user->getData()->name) ?></h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <?php foreach ($user->badges as $badge) { ?>
+                        <div class="col-sm-4">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= $this->escape($badge->brief) ?></h5>
+                                    <h6 class="card-subtitle"><?= date('Y-m-d', $badge->badge_time) ?><h6>
+                                </div>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
 <?= $this->partial('common/footer.phtml', $this) ?>
