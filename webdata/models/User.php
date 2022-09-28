@@ -1,11 +1,27 @@
 <?php
 
+class UserRow extends Pix_Table_Row
+{
+    public function getData()
+    {
+        $data = json_decode($this->data);
+        if (!property_exists($data, 'info')) {
+            $data->info = new StdClass;
+        }
+        if (!property_exists($data->info, 'name')) {
+            $data->info->name = $this->name;
+        }
+        return $data;
+    }
+}
+
 class User extends Pix_Table
 {
     public function init()
     {
         $this->_name = 'user';
         $this->_primary = 'id';
+        $this->_rowClass = 'UserRow';
 
         $this->_columns['id'] = ['type' => 'int', 'auto_increment' => true];
         $this->_columns['name'] = ['type' => 'varchar', 'size' => 16];
