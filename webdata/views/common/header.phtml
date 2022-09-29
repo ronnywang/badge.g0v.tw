@@ -4,8 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <title>g0v 成就系統</title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.1/bootstrap.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js" integrity="sha512-1TK4hjCY5+E9H3r5+05bEGbKGyK506WaDPfPe1s/ihwRjr6OtL43zJLzOFQ+/zciONEd+sp7LwrfOCnyukPSsg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.1/css/bootstrap.css">
 <script type="text/javascript">
 <?php if (getenv('GOOGLEANALYTICS_ACCOUNT')) { ?>
@@ -30,8 +30,15 @@ _gaq.push(['_trackPageview']);
             <a href="/" class="nav-link">回首頁</a>
             </li>
             <?php if (!$login_id = Pix_Session::get('login_id')) { ?>
-            <li class="nav-item">
-            <a href="/_/user/slacklogin" class="nav-link">Slack 登入</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                登入 
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                    <a href="/_/user/slacklogin" class="dropdown-item">Slack 登入</a>
+                    </li>
+                </ul>
             </li>
             <?php } else { ?>
             <span class="navbar-text">Hi! <?= $this->escape(Pix_Session::get('login_name')) ?></span>
