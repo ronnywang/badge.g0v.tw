@@ -125,6 +125,19 @@ class UserController extends Pix_Controller
         return $this->redirect($url);
     }
 
+    public function googleloginAction()
+    {
+        $return_to = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/googledone';
+        $url = 'https://accounts.google.com/o/oauth2/auth?'
+            . '&state=' . urlencode($_GET['next'])
+            . '&scope=email'
+            . '&redirect_uri=' . urlencode($return_to)
+            . '&response_type=code'
+            . '&client_id=' . getenv('GOOGLE_CLIENT_ID')
+            . '&access_type=offline';
+        return $this->redirect($url);
+    }
+
     public function showAction($params)
     {
         $name = $params[0];
@@ -195,7 +208,61 @@ class UserController extends Pix_Controller
         $ids[] = 'slack://' . $obj->user->id;
         $ids[] = $obj->user->email;
         Pix_Session::set('ids', $ids);
-        return $this->redirect('/_/user/');
+        if ($next) {
+            return $this->redirect($next);
+        } else {
+            return $this->redirect('/_/user/');
+        }
+    }
+
+	public function googledoneAction()
+    {
+        $return_to = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/googledone';
+        $next = $_GET['state'];
+
+        $params = array();
+        $params[] = 'code=' . urlencode($_GET['code']);
+        $params[] = 'client_id=' . urlencode(getenv('GOOGLE_CLIENT_ID'));
+        $params[] = 'client_secret=' . urlencode(getenv('GOOGLE_CLIENT_SECRET'));
+        $params[] = 'redirect_uri=' . urlencode($return_to);
+        $params[] = 'grant_type=authorization_code';
+        $curl = curl_init('https://www.googleapis.com/oauth2/v3/token');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, implode('&', $params));
+        $obj = json_decode(curl_exec($curl));
+        if (!$obj->id_token) {
+            return $this->alert('login failed', '/');
+        }
+        $tokens = explode('.', $obj->id_token);
+        $login_info = json_decode(base64_decode($tokens[1]));
+        if (!$login_info->email or !$login_info->email_verified) {
+            return $this->alert('login failed', '/');
+        }
+        $email = $login_info->email;
+        $access_token = $obj->access_token;
+
+        $curl = curl_init('https://www.googleapis.com/oauth2/v1/userinfo?alt=json');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Bearer' . $access_token));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $content = curl_exec($curl);
+        $obj = json_decode($content);
+        if ($obj->picture) {
+            $obj->picture = preg_replace('/=s96-c$/', '=s1000', $obj->picture);
+            Pix_Session::set('avatar', $obj->picture);
+        } else {
+            Pix_Session::set('avatar', '');
+        }
+
+        Pix_Session::set('login_id', $email);
+        Pix_Session::set('login_name', explode('@', $email)[0]);
+        $ids = [];
+        $ids[] = $email;
+        Pix_Session::set('ids', $ids);
+        if ($next) {
+            return $this->redirect($next);
+        } else {
+            return $this->redirect('/_/user/');
+        }
     }
 
     public function logoutAction()
