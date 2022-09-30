@@ -3,6 +3,15 @@
 include(__DIR__ . '/../init.inc.php');
 
 Service::insert([
+    'service_id' => 'github',
+    'data' => json_encode([
+        'name' => 'Github',
+        'url' => 'https://github.com/g0v',
+        'start_at' => '2012-10-21',
+        'end_at' => '2022-09-30',
+    ]),
+]);
+Service::insert([
     'service_id' => 'hackpad',
     'data' => json_encode([
         'name' => 'Hackpad',
