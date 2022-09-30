@@ -135,6 +135,21 @@ class UserController extends Pix_Controller
         return $this->redirect($url);
     }
 
+    public function githubloginAction()
+	{
+        $client_id = getenv('GITHUB_CLIENT_ID');
+        $redirect_uri = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/githubdone';
+
+        $url = sprintf("https://github.com/login/oauth/authorize?client_id=%s&scope=%s&redirect_uri=%s&state=%s&team=%s",
+            urlencode($client_id), // client_id
+            'email', // scope
+            urlencode($redirect_uri), // redirect_uri
+            urlencode($_GET['next']), // state
+            "" // team
+        );
+        return $this->redirect($url);
+    }
+
     public function googleloginAction()
     {
         $return_to = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/googledone';
@@ -240,6 +255,62 @@ class UserController extends Pix_Controller
         $ids[] = 'slack://' . $obj->user->id;
         $ids[] = $obj->user->email;
         Pix_Session::set('ids', $ids);
+        if ($next) {
+            return $this->redirect($next);
+        } else {
+            return $this->redirect('/_/user/');
+        }
+    }
+
+	public function githubdoneAction()
+	{
+        $client_id = getenv('GITHUB_CLIENT_ID');
+        $client_secret = getenv('GITHUB_CLIENT_SECRET');
+        $redirect_uri = 'https://' . getenv('SLACK_CALLBACK_HOST') . '/_/user/githubdone';
+        if (!$code = $_GET['code']) {
+            return $this->alert("Error", '/');
+        }
+
+        $url = "https://github.com/login/oauth/access_token";
+        $url .= "?client_id=" . urlencode($client_id);
+        $url .= "&client_secret=" . urlencode($client_secret);
+        $url .= "&code=" . urlencode($code);
+        $url .= "&redirect_uri=" . urlencode($redirect_uri);
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $content = curl_exec($curl);
+        $obj = json_decode($content);
+        if (!$obj or $obj->error) {
+            return $this->alert($obj->error ?: 'access token error', '/_/user/edit');
+        }
+        $access_token = $obj->access_token;
+
+        $curl = curl_init('https://api.github.com/user');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $access_token,
+            'User-Agent: badge.g0v.tw',
+        ]);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $content = curl_exec($curl);
+        $obj = json_decode($content);
+        if (!$obj->login) {
+            return $this->alert('no login', '/_/user/edit');
+        }
+
+        $next = $_GET['state'];
+
+        Pix_Session::set('login_id', 'github://' . $obj->login);
+        Pix_Session::set('login_name', $obj->login);
+        Pix_Session::set('avatar', $obj->avatar_url);
+
+        $ids = [];
+        $ids[] = 'github://' . $obj->login;
+        if ($obj->email) {
+            $ids[] = $obj->email;
+        }
+        Pix_Session::set('ids', $ids);
+
         if ($next) {
             return $this->redirect($next);
         } else {
