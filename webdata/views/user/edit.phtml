@@ -19,6 +19,10 @@ $info = $data->info;
     <li><?= $this->escape($id) ?></li>
     <?php } ?>
 </ul>
+<ul>
+    <li><a href="/_/user/slacklogin?next=/_/user/addid">新增 Slack 的身份</a></li>
+    <li><a href="/_/user/googlelogin?next=/_/user/addid">新增 Google 的身份</a></li>
+</ul>
 <h2>個人資料編輯</h2>
 <form method="post" action="/_/user/edit?method=info">
     <input type="hidden" name="sToken" value="<?= $this->sToken ?>">

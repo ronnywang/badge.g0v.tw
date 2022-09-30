@@ -13,11 +13,16 @@ class UserController extends Pix_Controller
 
     public function indexAction()
     {
+        if ($user_id = Pix_Session::get('user_id')) {
+            return $this->redirect('/_/user/edit');
+        }
+
         if (!$login_id = Pix_Session::get('login_id')) {
             return $this->redirect('/');
         }
 
         if ($user = User::findByLoginID($login_id)) {
+            Pix_Session::set('user_id', $user->id);
             return $this->redirect('/_/user/edit');
         }
 
@@ -31,11 +36,16 @@ class UserController extends Pix_Controller
 
     public function newAction()
     {
+        if ($user_id = Pix_Session::get('user_id')) {
+            return $this->redirect('/_/user/edit');
+        }
+
         if (!$login_id = Pix_Session::get('login_id')) {
             return $this->redirect('/');
         }
 
         if ($user = User::findByLoginID($login_id)) {
+            Pix_Session::set('user_id', $user->id);
             return $this->redirect('/_/user/edit');
         }
 
@@ -90,11 +100,11 @@ class UserController extends Pix_Controller
 
     public function editAction()
     {
-        if (!$login_id = Pix_Session::get('login_id')) {
-            return $this->redirect('/');
+        if (!$user_id = Pix_Session::get('user_id')) {
+            return $this->redirect('/_/user/');
         }
 
-        if (!$user = User::findByLoginID($login_id)) {
+        if (!$user = User::find($user_id)) {
             return $this->redirect('/_/user/new');
         }
 
@@ -168,6 +178,28 @@ class UserController extends Pix_Controller
         $user->update(['data' => json_encode($d)]);
         return $this->redirect('/_/user/edit');
     }
+
+    public function addidAction()
+    {
+        if (!$user_id = Pix_Session::get('user_id')) {
+            return $this->redirect('/_/user');
+        }
+        $user = User::find($user_id);
+        if (!$login_id = Pix_Session::get('login_id')) {
+            return $this->redirect('/_/user');
+        }
+        $new_ids = Pix_Session::get('ids');
+        if (!ServiceUser::searchByIds($new_ids)) {
+            return $this->alert('此身份沒有任何成就無法新增', '/_/user/edit');
+        }
+        $ids = json_decode($user->ids);
+        $ids = array_merge($ids, $new_ids);
+        $ids = array_unique($ids);
+        $user->update(['ids' => json_encode($ids)]);
+
+        return $this->redirect('/_/user/edit');
+    }
+
 
 	public function slackdoneAction()
 	{
@@ -270,6 +302,8 @@ class UserController extends Pix_Controller
         Pix_Session::delete('login_id');
         Pix_Session::delete('login_name');
         Pix_Session::delete('ids');
+        Pix_Session::delete('avatar');
+        Pix_Session::delete('user_id');
         return $this->redirect('/');
     }
 }
