@@ -21,7 +21,11 @@ $data = $this->user->getData();
             <?php foreach (ServiceUser::searchByIds(json_decode($this->user->ids)) as $user) { ?>
             <div class="card">
                 <div class="card-header">
+                    <?php if ($link = $user->getLink()) { ?>
+                    <h5 class="card-title"><a href="<?= $this->escape($link) ?>" target="_blank">[ <?= $this->escape($user->service->getData()->name) ?> ] <?= $this->escape($user->getData()->name) ?></a></h5>
+                    <?php } else { ?>
                     <h5 class="card-title">[ <?= $this->escape($user->service->getData()->name) ?> ] <?= $this->escape($user->getData()->name) ?></h5>
+                    <?php } ?>
                 </div>
                 <div class="card-body">
                     <div class="row">
