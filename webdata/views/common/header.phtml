@@ -1,9 +1,19 @@
+<?php
+if ($this->title) {
+    $title = $this->title . ' | g0v 成就系統';
+} else {
+    $title = 'g0v 成就系統';
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>g0v 成就系統</title>
+<title><?= $this->escape($title) ?></title>
+<?php if ($this->description) { ?>
+<meta property="og:description" content="<?= $this->escape($this->description) ?>" />
+<?php } ?>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js" integrity="sha512-1TK4hjCY5+E9H3r5+05bEGbKGyK506WaDPfPe1s/ihwRjr6OtL43zJLzOFQ+/zciONEd+sp7LwrfOCnyukPSsg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.1/css/bootstrap.css">

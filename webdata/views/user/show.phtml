@@ -1,5 +1,11 @@
 <?php
 $data = $this->user->getData();
+if ($data->info->name == $this->user->name) {
+	$this->title = $data->info->name;
+} else {
+	$this->title = "{$this->user->name}({$data->info->name})";
+}
+$this->description = trim($data->info->keyword . "\n" . $data->info->intro);
 ?>
 <?= $this->partial('common/header.phtml', $this) ?>
 <div class="container">
