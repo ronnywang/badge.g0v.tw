@@ -1,11 +1,20 @@
 <?php
 
+class ServiceBadgeRow extends Pix_Table_Row
+{
+    public function getData()
+    {
+        return json_decode($this->data);
+    }
+}
+
 class ServiceBadge extends Pix_Table
 {
     public function init()
     {
         $this->_name = 'service_badge';
         $this->_primary = 'id';
+        $this->_rowClass = 'ServiceBadgeRow';
 
         $this->_columns['id'] = ['type' => 'int', 'auto_increment' => true];
         $this->_columns['service_id'] = ['type' => 'int'];

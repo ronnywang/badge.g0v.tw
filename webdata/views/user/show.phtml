@@ -36,6 +36,15 @@ $data = $this->user->getData();
                                 <div class="card-body">
                                     <h5 class="card-title"><?= $this->escape($badge->brief) ?></h5>
                                     <h6 class="card-subtitle"><?= date('Y-m-d', $badge->badge_time) ?></h6>
+                                    <?php $data = $badge->getData() ?>
+                                    <?php if (property_exists($data, 'title')) { ?>
+                                        <?php if (property_exists($data, 'url')) { ?>
+                                        <p>
+                                        <a href="<?= $this->escape($data->url) ?>" target="_blank"><?= $this->escape($data->title) ?></a></p>
+                                        <?php } else { ?>
+                                        <p><?= $this->escape($data->title) ?></p>
+                                        <?php } ?>
+                                    <?php } ?>
                                 </div>
                                 <div class="card-footer text-end">
                                     <a href="/_/badge/show?service_id=<?= $badge->service_id ?>&hash=<?= $badge->badge_hash ?>#rank-<?= $ranks->{$badge->id}[0] ?>"><?= $ranks->{$badge->id}[0] ?> / <?= $ranks->{$badge->id}[1] ?></a>
