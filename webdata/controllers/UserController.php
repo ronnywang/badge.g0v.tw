@@ -166,6 +166,7 @@ class UserController extends Pix_Controller
     public function showAction($params)
     {
         $name = $params[0];
+        $name = urldecode($name);
         if (!$name) {
             return $this->redirect('/');
         }
