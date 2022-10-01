@@ -1,3 +1,12 @@
+<?php
+$this->title = sprintf("[ %s ] %s", $this->service->getData()->name, $this->badge->brief);
+$records = ServiceBadge::getBadgeList($this->service->id, $this->badge->badge_hash);
+foreach (array_slice($records, 1, 5) as $idx => $record) {
+    $terms[] = sprintf("%d %s", $idx + 1, $record->name);
+}
+$this->description = implode("\n", $terms);
+
+?>
 <?= $this->partial('common/header.phtml', $this) ?>
 <h3>[ <?= $this->escape($this->service->getData()->name) ?> ] <?= $this->escape($this->badge->brief) ?></h3>
 <table class="table">
@@ -9,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach (ServiceBadge::getBadgeList($this->service->id, $this->badge->badge_hash) as $record) { ?>
+    <?php foreach ($records as $record) { ?>
     <tr>
         <td id="rank-<?= $record->rank ?>"><?= $record->rank ?></td>
         <td><?= date('Y-m-d', $record->badge_time) ?></td>
