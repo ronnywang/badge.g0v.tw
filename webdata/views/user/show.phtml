@@ -38,6 +38,7 @@ $data = $this->user->getData();
                                     <h6 class="card-subtitle"><?= date('Y-m-d', $badge->badge_time) ?></h6>
                                     <?php $data = $badge->getData() ?>
                                     <?php if (property_exists($data, 'title')) { ?>
+<?php $data->title = mb_strimwidth($data->title, 0, 80, '...', 'UTF-8') ?>
                                         <?php if (property_exists($data, 'url')) { ?>
                                         <p>
                                         <a href="<?= $this->escape($data->url) ?>" target="_blank"><?= $this->escape($data->title) ?></a></p>
