@@ -212,6 +212,7 @@ class UserController extends Pix_Controller
         $ids = array_merge($ids, $new_ids);
         $ids = array_unique($ids);
         $user->update(['ids' => json_encode($ids)]);
+        $user->updateServiceUsers();
 
         return $this->redirect('/_/user/edit');
     }
