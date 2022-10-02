@@ -34,4 +34,10 @@ $info = $data->info;
     自我介紹：<textarea name="info[intro]"><?= $this->escape($info->intro) ?></textarea>
     <button type="submit">修改</button>
 </form>
+<h2>刪除我的帳號</h2>
+<form method="post" action="/_/user/delete">
+    <input type="hidden" name="sToken" value="<?= $this->sToken ?>">
+    輸入帳號確認：<input type="text" name="name" placeholder="<?= $this->escape($this->user->name) ?>" pattern="<?= $this->escape(preg_quote($this->user->name)) ?>">
+    <button type="submit">刪除</button>
+</form>
 <?= $this->partial('common/footer.phtml', $this) ?>

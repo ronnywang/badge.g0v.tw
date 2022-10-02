@@ -370,6 +370,22 @@ class UserController extends Pix_Controller
         }
     }
 
+    public function deleteAction()
+    {
+        if ($_POST['sToken'] != $this->view->sToken) {
+            return $this->redirect('/_/user/edit');
+        }
+        if (!$user_id = Pix_Session::get('user_id')) {
+            return $this->redirect('/_/user');
+        }
+        $user = User::find($user_id);
+        if ($_POST['name'] != $user->name) {
+            return $this->redirect('/_/user/edit');
+        }
+        $user->delete();
+        return $this->redirect('/_/user/logout');
+    }
+
     public function logoutAction()
     {
         Pix_Session::delete('login_id');
