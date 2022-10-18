@@ -176,6 +176,60 @@ class UserController extends Pix_Controller
         $this->view->user = $user;
     }
 
+    public function apiAction()
+    {
+        list(, /*_*/, /*user*/, /*api*/, $name) = explode('/', $this->getURI());
+        if (!$name) {
+            return $this->redirect('/');
+        }
+        if (!$user = User::find_by_name($name)) {
+            return $this->redirect('/');
+        }
+        $ret = new StdClass;
+        $data = $user->getData();
+        $ret->user = [
+            'name' => $data->info->name,
+            'id' => $user->name,
+            'keyword' => $data->info->keyword,
+            'intro' => $data->info->intro,
+            'avatar' => $data->avatar,
+        ];
+
+        $ret->services = [];
+        $ret->badges = [];
+
+        foreach (ServiceUser::searchByIds(json_decode($user->ids)) as $suser) {
+            $service = [
+                'name' => $suser->getData()->name,
+                'service' => $suser->service->getData()->name,
+                'service_id' => $suser->service_id,
+                'serviceuser_id' => $suser->id,
+            ];
+            if ($link = $suser->getLink()) {
+                $service['link'] = $link;
+            }
+            $ranks = ServiceBadge::getBadgeRank($suser->badges);
+            foreach ($suser->badges as $badge) {
+                $data = $badge->getData();
+                $ret->badges[] = [
+                    'serviceuser_id' => $suser->id,
+                    'brief' => $badge->brief,
+                    'time' => date('Y-m-d', $badge->badge_time),
+                    'title' => $data->title,
+                    'url' => $data->url,
+                    'rank' => $ranks->{$badge->id}[0],
+                    'total' => $ranks->{$badge->id}[1],
+                ];
+            }
+
+            $ret->services[] = $service;
+        }
+
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET');
+        return $this->json($ret);
+    }
+
     public function setavatarAction()
     {
         $avatar = Pix_Session::get('avatar');
