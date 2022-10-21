@@ -35,6 +35,9 @@ class UserRow extends Pix_Table_Row
     public function isServiceUserPublic($service_user)
     {
         $public = $this->getData()->public;
+        if (is_scalar($service_user)) {
+            $service_user = ServiceUser::find($service_user);
+        }
         if (property_exists($public, $service_user->id)) {
             return $public->{$service_user->id};
         }

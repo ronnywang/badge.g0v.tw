@@ -23,10 +23,18 @@ $this->description = implode("\n", $terms);
         <td id="rank-<?= $record->rank ?>"><?= $record->rank ?></td>
         <td><?= date('Y-m-d', $record->badge_time) ?></td>
         <td>
-            <?php if ($record->user_id) { ?>
-            <a href="/<?= urlencode($record->user_id) ?>"><?= $this->escape($record->name) ?></a>
+            <?php if (!$this->service->getData()->public) { ?>
+            <?php if ($record->user_id and $u = User::find_by_name($record->user_id) and $u->isServiceUserPublic($record->service_user_id)) { ?>
+                <a href="/<?= urlencode($record->user_id) ?>"><?= $this->escape($record->name) ?></a>
+                <?php } else { ?>
+                未公開
+                <?php } ?>
             <?php } else { ?>
-            <?= $this->escape($record->name) ?>
+                <?php if ($record->user_id) { ?>
+                <a href="/<?= urlencode($record->user_id) ?>"><?= $this->escape($record->name) ?></a>
+                <?php } else { ?>
+                <?= $this->escape($record->name) ?>
+                <?php } ?>
             <?php } ?>
         </td>
     </tr>

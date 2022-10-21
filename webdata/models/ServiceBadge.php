@@ -47,7 +47,7 @@ class ServiceBadge extends Pix_Table
         $ret = [];
         $prev_time = null;
         $rank = 1;
-        $sql = sprintf("SELECT badge_time, service_user.data->>'name' AS name, \"user\".name AS user_id
+        $sql = sprintf("SELECT badge_time, service_user.data->>'name' AS name, \"user\".name AS user_id, service_user.id AS service_user_id
             FROM service_badge 
             JOIN service_user ON service_badge.service_user = service_user.id
             LEFT JOIN \"user\" ON \"user\".data->'service_users' @> TO_JSONB(service_user.id)
@@ -58,6 +58,7 @@ class ServiceBadge extends Pix_Table
             $obj->badge_time = $row['badge_time'];
             $obj->name = $row['name'];
             $obj->user_id = $row['user_id'];
+            $obj->service_user_id = $row['service_user_id'];
             if (is_null($prev_time) or $prev_time != $row['badge_time']) {
                 $rank = count($ret) + 1;
                 $prev_time = $row['badge_time'];
