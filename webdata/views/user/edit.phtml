@@ -25,6 +25,20 @@ $info = $data->info;
     <li><a href="/_/user/googlelogin?next=/_/user/addid">新增 Google 的身份</a></li>
     <li><a href="/_/user/githublogin?next=/_/user/addid">新增 Github 的身份</a></li>
 </ul>
+<h2>連結服務帳號編輯</h2>
+<form method="post" action="/_/user/setpublic">
+    <input type="hidden" name="sToken" value="<?= $this->sToken ?>">
+<span>可以勾選想要顯示的服務</span>
+<ul>
+    <?php foreach (ServiceUser::searchByIds(json_decode($this->user->ids)) as $user) { ?>
+    <li>
+    <input type="checkbox" name="service_user[<?= $user->id ?>]" value="1" <?= $this->user->isServiceUserPublic($user) ? ' checked': '' ?>>
+    [ <?= $this->escape($user->service->getData()->name) ?> ] <?= $this->escape($user->getData()->name) ?>
+    </li>
+    <?php } ?>
+</ul>
+<button class="btn btn-primary" type="submit">修改顯示設定</button>
+</form>
 <h2>個人資料編輯</h2>
 <form method="post" action="/_/user/edit?method=info">
     <input type="hidden" name="sToken" value="<?= $this->sToken ?>">

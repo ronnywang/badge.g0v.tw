@@ -230,6 +230,30 @@ class UserController extends Pix_Controller
         return $this->json($ret);
     }
 
+    public function setpublicAction()
+    {
+        if (!$login_id = Pix_Session::get('login_id')) {
+            return $this->redirect('/');
+        }
+
+        if (!$user = User::findByLoginID($login_id)) {
+            return $this->redirect('/');
+        }
+
+        if ($_POST['sToken'] != $this->view->sToken) {
+            return $this->redirect('/_/user/edit');
+        }
+
+        $data = $user->getData();
+        $public = $data->public;
+        foreach (ServiceUser::searchByIds(json_decode($user->ids)) as $suser) {
+            $public->{$suser->id} = array_key_exists($suser->id, $_POST['service_user']);
+        }
+        $data->public = $public;
+        $user->update(['data' => json_encode($data)]);
+        return $this->redirect('/_/user/edit');
+    }
+
     public function setavatarAction()
     {
         $avatar = Pix_Session::get('avatar');

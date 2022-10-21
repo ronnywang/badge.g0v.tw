@@ -25,6 +25,7 @@ $this->description = trim($data->info->keyword . "\n" . $data->info->intro);
         </div>
         <div class="col-sm-9 col-md-9">
             <?php foreach (ServiceUser::searchByIds(json_decode($this->user->ids)) as $user) { ?>
+            <?php if (!$this->user->isServiceUserPublic($user)) { continue; } ?>
             <div class="card">
                 <div class="card-header">
                     <?php if ($link = $user->getLink()) { ?>
