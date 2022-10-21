@@ -21,10 +21,24 @@ class UserRow extends Pix_Table_Row
         if (!property_exists($data, 'info')) {
             $data->info = new StdClass;
         }
+
+        if (!property_exists($data, 'public')) {
+            $data->public = new StdClass;
+        }
+
         if (!property_exists($data->info, 'name')) {
             $data->info->name = $this->name;
         }
         return $data;
+    }
+
+    public function isServiceUserPublic($service_user)
+    {
+        $public = $this->getData()->public;
+        if (property_exists($public, $service_user->id)) {
+            return $public->{$service_user->id};
+        }
+        return $service_user->service->getData()->public;
     }
 }
 
