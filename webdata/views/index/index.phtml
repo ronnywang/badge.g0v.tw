@@ -1,10 +1,21 @@
 <?= $this->partial('common/header.phtml', $this) ?>
 <h3>最新使用者</h3>
-<ul>
-    <?php foreach (User::search(1)->order('id DESC')->limit(10) as $user) { ?>
-    <li>
-    <a href="/<?= urlencode($user->name) ?>"><?= $this->escape($user->name) ?></a>
-    </li>
+<div class="row">
+<?php foreach (User::search(1)->order('id DESC')->limit(100) as $user) { ?>
+<?php $data = $user->getData(); ?>
+<div class="card col-2">
+    <?php if ($data->avatar) { ?>
+    <img class="card-img-top" src="<?= $this->escape($data->avatar) ?>" width="260" height="260">
     <?php } ?>
-</ul>
+    <div class="card-body">
+        <a href="/<?= urlencode($user->name) ?>">
+            <h3 class="card-title"><?= $this->escape($data->info->name) ?></h3>
+            <p>@<?= $this->escape($user->name) ?></p>
+        </a>
+        <p><?= $this->escape($data->info->keyword) ?></p>
+        <p><?= $this->escape($data->info->intro) ?></p>
+    </div>
+</div>
+<?php } ?>
+</div>
 <?= $this->partial('common/footer.phtml', $this) ?>
