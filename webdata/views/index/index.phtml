@@ -5,7 +5,9 @@
 <?php $data = $user->getData(); ?>
 <div class="card col-2">
     <?php if ($data->avatar) { ?>
-    <img class="card-img-top" src="<?= $this->escape($data->avatar) ?>" width="260" height="260">
+    <div class="ratio ratio-1x1 card-img-top">
+        <img style="object-fit: cover;" src="<?= $this->escape($data->avatar) ?>">
+    </div>
     <?php } ?>
     <div class="card-body">
         <a href="/<?= urlencode($user->name) ?>">
